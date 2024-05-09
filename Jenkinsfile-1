@@ -1,13 +1,14 @@
 pipeline {
-  agent { label 'linux' }
+  agent none // Ensure that the pipeline runs on Jenkins controller
   options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
+    buildDiscarder(logRotator(numToKeepStr: '5')) // Discard old builds
   }
   stages {
     stage('Scan') {
+      agent any // Use any available agent for this stage
       steps {
-        withSonarQubeEnv(installationName: 'sq1') { 
-          sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
+        withSonarQubeEnv(installationName: 'sq1') { // Ensure the correct SonarQube setup
+          sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar' // Run the SonarQube scan
         }
       }
     }
